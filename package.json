@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "africastalking": "^0.7.7",
+    "axios": "^1.12.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "ethers": "^6.15.0",
+    "express": "^5.1.0",
+    "flutterwave-node": "^1.2.2",
+    "joi": "^18.0.1",
+    "mongoose": "^8.18.2",
+    "morgan": "^1.10.1",
+    "paystack-api": "^2.0.6",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
