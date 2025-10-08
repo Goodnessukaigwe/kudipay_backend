@@ -199,6 +199,56 @@ CREATE TABLE transactions (
 );
 ```
 
+## 💱 FX Engine (NEW!)
+
+A production-ready foreign exchange engine that converts crypto to local currency with profitable markup.
+
+### Features
+
+- **Real-time rates** from Binance, Chainlink, and fallback providers
+- **1-3% configurable markup** for profit generation
+- **Automatic failover** with circuit breaker pattern
+- **Comprehensive logging** of all conversions for analytics
+- **Volume discounts** for large transactions
+- **Profit tracking** with detailed analytics
+
+### Quick Start
+
+```bash
+# Get current rates
+curl http://localhost:3000/api/fx/rates
+
+# Convert USDC to NGN
+curl -X POST http://localhost:3000/api/fx/convert \
+  -H "Content-Type: application/json" \
+  -d '{"amount":100,"fromCurrency":"USDC","toCurrency":"NGN"}'
+
+# View profit statistics
+curl http://localhost:3000/api/fx/profit/stats?timeframe=24h
+```
+
+### Documentation
+
+- **Full Guide**: [FX_ENGINE.md](./docs/FX_ENGINE.md)
+- **Quick Start**: [FX_QUICKSTART.md](./FX_QUICKSTART.md)
+- **Implementation**: [FX_IMPLEMENTATION_SUMMARY.md](./FX_IMPLEMENTATION_SUMMARY.md)
+
+### Supported Pairs
+
+- USDC/NGN, USDT/NGN (Stablecoins)
+- ETH/NGN, BTC/NGN (Crypto)
+- ETH/USD, BTC/USD (Crypto to USD)
+- USD/NGN, NGN/USD (Fiat pairs)
+
+### Configuration
+
+Set markup rates in `.env`:
+
+```bash
+FX_MARKUP_USDC_NGN=0.02    # 2% markup
+FX_MARKUP_ETH_NGN=0.025    # 2.5% markup for volatile assets
+```
+
 ## 🧪 Testing
 
 ```bash
@@ -210,6 +260,9 @@ npm run test:watch
 
 # Test USSD menu
 curl http://localhost:3000/api/ussd/test-menu
+
+# Test FX Engine (comprehensive)
+node scripts/test_fx_engine.js
 ```
 
 ## 🚀 Deployment
