@@ -44,9 +44,19 @@ const ussdConfig = {
     withdrawal: {
       enterAmount: 'Enter amount to withdraw (NGN):',
       selectMethod: 'Select withdrawal method:',
+      enterPin: 'Enter your 4-digit PIN to confirm withdrawal:',
       success: 'Withdrawal request submitted. You will receive ₦{amount} in your {method}.',
       insufficient: 'Insufficient balance.',
-      failed: 'Withdrawal failed. Please try again.'
+      failed: 'Withdrawal failed. Please try again.',
+      pinInvalid: 'Invalid PIN. Please enter exactly 4 digits.',
+      accountLocked: 'Account locked due to multiple failed attempts. Try again later.'
+    },
+    pin: {
+      enter: 'Enter your 4-digit PIN:',
+      confirm: 'Confirm your 4-digit PIN:',
+      invalid: 'PIN must be exactly 4 digits.',
+      mismatch: 'PINs do not match. Please try again.',
+      weak: 'PIN too weak. Avoid sequences like 1234 or repeated digits.'
     }
   }
 };

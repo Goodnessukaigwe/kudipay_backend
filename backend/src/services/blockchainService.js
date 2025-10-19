@@ -5,7 +5,7 @@ const logger = require('../utils/logger');
 class BlockchainService {
   constructor() {
     this.provider = provider;
-    this.wallet = getWallet();
+    this.wallet = getWallet(); // May be null if no private key configured
   }
 
   /**

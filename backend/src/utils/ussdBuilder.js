@@ -44,6 +44,27 @@ const buildWithdrawMenu = () => {
 };
 
 /**
+ * Build bank selection menu
+ * @returns {string} - Bank menu string
+ */
+const buildBankMenu = () => {
+  const banks = {
+    '1': 'Access Bank',
+    '2': 'GTBank',
+    '3': 'First Bank',
+    '4': 'Zenith Bank',
+    '5': 'UBA',
+    '6': 'Union Bank',
+    '7': 'Polaris Bank',
+    '8': 'Wema Bank',
+    '9': 'Ecobank',
+    '10': 'Fidelity Bank'
+  };
+  
+  return buildMenu('Select your bank:', banks);
+};
+
+/**
  * Build balance display message
  * @param {number} balance - Balance amount in NGN
  * @returns {string} - Formatted balance message
@@ -109,6 +130,7 @@ module.exports = {
   buildMenu,
   buildMainMenu,
   buildWithdrawMenu,
+  buildBankMenu,
   buildBalanceMessage,
   buildWithdrawalSuccess,
   parseAmount,

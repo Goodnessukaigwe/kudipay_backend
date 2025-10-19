@@ -6,23 +6,25 @@ const paymentService = require('./paymentService');
 const ussdBuilder = require('../utils/ussdBuilder');
 const ussdConfig = require('../../config/ussd');
 const logger = require('../utils/logger');
-const { formatPhoneNumber, isValidPhoneNumber } = require('../utils/helpers');
+const { formatPhoneNumber, normalizePhoneNumber, isValidPhoneNumber } = require('../utils/helpers');
 
 class UssdService {
   /**
    * Process incoming USSD request
+   * Automatically converts local phone format to international
    */
   async processRequest({ sessionId, serviceCode, phoneNumber, text }) {
     try {
-      const formattedPhone = formatPhoneNumber(phoneNumber);
+      // Normalize phone number to international format (+234...)
+      const normalizedPhone = normalizePhoneNumber(phoneNumber);
       const userInput = text.trim();
       
-      // Get or create session
-      let session = await UssdSession.findActive(sessionId, formattedPhone);
+      // Get or create session using normalized phone
+      let session = await UssdSession.findActive(sessionId, normalizedPhone);
       
       if (!session || session.isExpired()) {
         // New session - show main menu
-        session = await UssdSession.createOrUpdate(sessionId, formattedPhone, 'main_menu');
+        session = await UssdSession.createOrUpdate(sessionId, normalizedPhone, 'main_menu');
         return this.getMainMenuResponse();
       }
       
@@ -259,6 +261,131 @@ class UssdService {
       logger.error('Transaction history error:', error);
       await session.end();
       return 'END Unable to fetch transaction history. Please try again later.';
+    }
+  }
+
+  /**
+   * Handle bank account number input
+   */
+  async handleBankAccountNumber(session, input) {
+    // Validate Nigerian bank account format (10 digits)
+    const accountNumber = input.replace(/\s+/g, '');
+    
+    if (!/^\d{10}$/.test(accountNumber)) {
+      return 'CON Invalid account number. Enter 10 digits:';
+    }
+    
+    await session.updateStep('bank_code', { accountNumber });
+    return 'CON ' + ussdBuilder.buildBankMenu();
+  }
+
+  /**
+   * Handle bank code selection
+   */
+  async handleBankCode(session, input) {
+    const bankCodes = {
+      '1': { code: '044', name: 'Access Bank' },
+      '2': { code: '058', name: 'GTBank' },
+      '3': { code: '011', name: 'First Bank' },
+      '4': { code: '057', name: 'Zenith Bank' },
+      '5': { code: '033', name: 'UBA' },
+      '6': { code: '032', name: 'Union Bank' },
+      '7': { code: '076', name: 'Polaris Bank' },
+      '8': { code: '035', name: 'Wema Bank' },
+      '9': { code: '050', name: 'Ecobank' },
+      '10': { code: '070', name: 'Fidelity Bank' }
+    };
+    
+    const bank = bankCodes[input];
+    
+    if (!bank) {
+      return 'CON Invalid option. ' + ussdBuilder.buildBankMenu();
+    }
+    
+    const amount = session.getData('amount');
+    const accountNumber = session.getData('accountNumber');
+    
+    await session.updateStep('verify_pin', { 
+      bankCode: bank.code,
+      bankName: bank.name
+    });
+    
+    return `CON Withdraw ₦${amount.toLocaleString()} to ${bank.name}?\nAccount: ${accountNumber}\n\nEnter your 4-digit PIN to confirm:`;
+  }
+
+  /**
+   * Handle PIN verification for withdrawal
+   */
+  async handlePinVerification(session, input) {
+    try {
+      // Validate PIN format (4 digits)
+      if (!/^\d{4}$/.test(input)) {
+        return 'CON Invalid PIN format. Enter your 4-digit PIN:';
+      }
+
+      const user = await User.findByPhone(session.phoneNumber);
+      
+      if (!user) {
+        await session.end();
+        return 'END Account not found. Please register first.';
+      }
+
+      // Verify PIN with attempt limiting
+      const verificationResult = await user.verifyPinWithLimiting(input);
+
+      if (!verificationResult.success) {
+        await session.end();
+        return `END ${verificationResult.message}`;
+      }
+
+      // PIN verified successfully - process withdrawal
+      const amount = session.getData('amount');
+      const method = session.getData('method');
+
+      let result;
+
+      if (method === 'bank') {
+        const accountNumber = session.getData('accountNumber');
+        const bankCode = session.getData('bankCode');
+        const bankName = session.getData('bankName');
+
+        result = await paymentService.withdrawToBank(
+          session.phoneNumber,
+          amount,
+          bankCode,
+          accountNumber
+        );
+
+        await session.end();
+        return `END Withdrawal of ₦${amount.toLocaleString()} to ${bankName} (${accountNumber}) initiated successfully.\n\nRef: ${result.reference}`;
+
+      } else if (method === 'mobile_money') {
+        result = await paymentService.withdrawToMobileMoney(
+          session.phoneNumber,
+          amount,
+          'MTN' // Default provider for now
+        );
+
+        await session.end();
+        return `END Withdrawal of ₦${amount.toLocaleString()} to your mobile money account initiated.\n\nRef: ${result.reference}`;
+
+      } else if (method === 'cash_agent') {
+        result = await paymentService.initiateCashPickup(
+          session.phoneNumber,
+          amount
+        );
+
+        await session.end();
+        return `END Cash pickup code: ${result.pickupCode}\n\nShow this code to any KudiPay agent to collect ₦${amount.toLocaleString()}`;
+      }
+
+      await session.end();
+      return 'END Withdrawal processed successfully!';
+
+    } catch (error) {
+      logger.error('PIN verification error:', error);
+      await session.end();
+      return 'END Unable to process withdrawal. Please try again later.';
     }
   }
 
