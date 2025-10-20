@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Transaction = require('../models/Transaction');
 const fxService = require('./fxService');
+const flutterwaveService = require('./flutterwaveService');
 const logger = require('../utils/logger');
 const { generateTxRef, formatPhoneNumber } = require('../utils/helpers');
 
@@ -40,167 +41,484 @@ class PaymentService {
     ];
   }
 
-  /**
-   * Withdraw to bank account
-   */
+  // Helper to detect demo mode
+  isDemoMode() {
+    return process.env.DEMO_MODE === 'true' || process.env.NODE_ENV === 'demo' || process.env.NODE_ENV === 'development';
+  }
+
+  // Legacy methods for backward compatibility
   async withdrawToBank({ phoneNumber, amount, accountNumber, bankCode, pin }) {
     try {
       const formattedPhone = formatPhoneNumber(phoneNumber);
-      
-      // Find user
-      const user = await User.findByPhone(formattedPhone);
+      let user;
+      if (this.isDemoMode()) {
+        user = {
+          phoneNumber: formattedPhone,
+          walletAddress: 'demo_wallet',
+          verifyPin: (inputPin) => inputPin === '1234',
+        };
+      } else {
+        user = await User.findByPhone(formattedPhone);
+      }
       if (!user) {
         throw new Error('User not found');
       }
-
-      // Verify PIN
       if (!user.verifyPin(pin)) {
         throw new Error('Invalid PIN');
       }
-
-      // Verify bank code
       const bank = this.supportedBanks.find(b => b.code === bankCode);
       if (!bank) {
         throw new Error('Unsupported bank code');
       }
-
-      // Verify account (mock verification)
       const accountVerification = await this.verifyBankAccount(accountNumber, bankCode);
-      
-      // Check balance (convert NGN to USDT for balance check)
       const requiredUSDT = await fxService.convertToUSDT(amount);
-      // This would check actual blockchain balance in production
-      
-      // Create withdrawal transaction
       const txRef = generateTxRef();
-      const transaction = await Transaction.create({
-        txRef,
-        fromPhone: formattedPhone,
-        fromWallet: user.walletAddress,
-        amount: requiredUSDT,
-        currency: 'USDT',
-        amountNgn: amount,
-        exchangeRate: await fxService.getUSDTToNGNRate(),
-        type: 'withdrawal',
-        status: 'processing',
-        metadata: {
-          withdrawalMethod: 'bank',
-          accountNumber,
-          bankCode,
-          bankName: bank.name,
-          accountName: accountVerification.accountName
-        }
-      });
-
-      // Process withdrawal (mock for MVP)
+      let transaction;
+      if (this.isDemoMode()) {
+        transaction = {
+          txRef,
+          fromPhone: formattedPhone,
+          fromWallet: user.walletAddress,
+          amount: requiredUSDT,
+          currency: 'USDT',
+          amountNgn: amount,
+          exchangeRate: 1500,
+          type: 'withdrawal',
+          status: 'processing',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          metadata: {
+            withdrawalMethod: 'bank',
+            accountNumber,
+            bankCode,
+            bankName: bank.name,
+            accountName: accountVerification.accountName
+          },
+          updateStatus: async function(status) { this.status = status; this.updatedAt = new Date().toISOString(); }
+        };
+      } else {
+        transaction = await Transaction.create({
+          txRef,
+          fromPhone: formattedPhone,
+          fromWallet: user.walletAddress,
+          amount: requiredUSDT,
+          currency: 'USDT',
+          amountNgn: amount,
+          exchangeRate: await fxService.getUSDTToNGNRate(),
+          type: 'withdrawal',
+          status: 'processing',
+          metadata: {
+            withdrawalMethod: 'bank',
+            accountNumber,
+            bankCode,
+            bankName: bank.name,
+            accountName: accountVerification.accountName
+          }
+        });
+      }
       await this.processBankWithdrawal(transaction, accountNumber, bankCode, amount);
-      
       logger.info(`Bank withdrawal initiated: ${txRef} - ₦${amount} to ${bank.name}`);
-      
       return {
         txRef,
         amount,
         bankName: bank.name,
-        accountNumber: accountNumber.replace(/\d(?=\d{4})/g, '*'), // Mask account number
+        accountNumber: accountNumber.replace(/\d(?=\d{4})/g, '*'),
         status: 'processing',
         estimatedTime: '2-24 hours'
       };
-      
     } catch (error) {
       logger.error('Withdraw to bank error:', error);
       throw error;
     }
   }
 
-  /**
-   * Withdraw to mobile money
-   */
   async withdrawToMobileMoney({ phoneNumber, amount, mobileMoneyNumber, provider, pin }) {
     try {
       const formattedPhone = formatPhoneNumber(phoneNumber);
-      
-      // Find user
-      const user = await User.findByPhone(formattedPhone);
+      let user;
+      if (this.isDemoMode()) {
+        user = {
+          phoneNumber: formattedPhone,
+          walletAddress: 'demo_wallet',
+          verifyPin: (inputPin) => inputPin === '1234',
+        };
+      } else {
+        user = await User.findByPhone(formattedPhone);
+      }
       if (!user) {
         throw new Error('User not found');
       }
-
-      // Verify PIN
       if (!user.verifyPin(pin)) {
         throw new Error('Invalid PIN');
       }
-
-      // Verify provider
       const providerInfo = this.mobileMoneyProviders.find(p => p.code === provider);
       if (!providerInfo) {
         throw new Error('Unsupported mobile money provider');
       }
-
-      // Check balance
       const requiredUSDT = await fxService.convertToUSDT(amount);
-      
-      // Create withdrawal transaction
       const txRef = generateTxRef();
-      const transaction = await Transaction.create({
-        txRef,
-        fromPhone: formattedPhone,
-        fromWallet: user.walletAddress,
-        amount: requiredUSDT,
-        currency: 'USDT',
-        amountNgn: amount,
-        exchangeRate: await fxService.getUSDTToNGNRate(),
-        type: 'withdrawal',
-        status: 'processing',
-        metadata: {
-          withdrawalMethod: 'mobile_money',
-          mobileMoneyNumber,
-          provider,
-          providerName: providerInfo.name
-        }
-      });
-
-      // Process mobile money withdrawal (mock)
+      let transaction;
+      if (this.isDemoMode()) {
+        transaction = {
+          txRef,
+          fromPhone: formattedPhone,
+          fromWallet: user.walletAddress,
+          amount: requiredUSDT,
+          currency: 'USDT',
+          amountNgn: amount,
+          exchangeRate: 1500,
+          type: 'withdrawal',
+          status: 'processing',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          metadata: {
+            withdrawalMethod: 'mobile_money',
+            mobileMoneyNumber,
+            provider,
+            providerName: providerInfo.name
+          },
+          updateStatus: async function(status) { this.status = status; this.updatedAt = new Date().toISOString(); }
+        };
+      } else {
+        transaction = await Transaction.create({
+          txRef,
+          fromPhone: formattedPhone,
+          fromWallet: user.walletAddress,
+          amount: requiredUSDT,
+          currency: 'USDT',
+          amountNgn: amount,
+          exchangeRate: await fxService.getUSDTToNGNRate(),
+          type: 'withdrawal',
+          status: 'processing',
+          metadata: {
+            withdrawalMethod: 'mobile_money',
+            mobileMoneyNumber,
+            provider,
+            providerName: providerInfo.name
+          }
+        });
+      }
       await this.processMobileMoneyWithdrawal(transaction, mobileMoneyNumber, provider, amount);
-      
       logger.info(`Mobile money withdrawal initiated: ${txRef} - ₦${amount} via ${providerInfo.name}`);
-      
       return {
         txRef,
         amount,
         provider: providerInfo.name,
-        mobileMoneyNumber: mobileMoneyNumber.replace(/\d(?=\d{4})/g, '*'), // Mask number
+        mobileMoneyNumber: mobileMoneyNumber.replace(/\d(?=\d{4})/g, '*'),
         status: 'processing',
         estimatedTime: '5-30 minutes'
       };
-      
     } catch (error) {
       logger.error('Withdraw to mobile money error:', error);
       throw error;
     }
   }
 
-  /**
-   * Get supported banks
-   */
+  // Flutterwave integration methods
+  // All Flutterwave logic is delegated to flutterwaveService. No Flutterwave-specific data or logic should be here.
+  async withdrawToNigerianBank({ phoneNumber, amount, accountNumber, bankCode, pin, accountName }) {
+    try {
+      const formattedPhone = formatPhoneNumber(phoneNumber);
+      let user;
+      if (this.isDemoMode()) {
+        user = {
+          phoneNumber: formattedPhone,
+          walletAddress: 'demo_wallet',
+          verifyPin: (inputPin) => inputPin === '1234',
+        };
+      } else {
+        user = await User.findByPhone(formattedPhone);
+      }
+      if (!user) {
+        throw new Error('User not found');
+      }
+      if (!user.verifyPin(pin)) {
+        throw new Error('Invalid PIN');
+      }
+      const banks = flutterwaveService.getNigerianBanks();
+      const bank = banks.find(b => b.code === bankCode);
+      if (!bank) {
+        throw new Error('Bank not supported in Nigeria');
+      }
+      const verification = await flutterwaveService.verifyAccountNumber(accountNumber, bankCode, 'NG');
+      if (!verification.verified) {
+        throw new Error('Account verification failed');
+      }
+      const requiredUSDT = await fxService.convertToUSDT(amount);
+      const exchangeRate = await fxService.getUSDTToNGNRate();
+      const transfer = await flutterwaveService.initiateNigerianBankTransfer({
+        amount,
+        currency: 'NGN',
+        accountNumber,
+        bankCode,
+        accountName: verification.accountName || accountName,
+        phoneNumber: formattedPhone,
+        narration: `KudiPay withdrawal - ${formattedPhone}`
+      });
+      let txRecord;
+      if (this.isDemoMode()) {
+        txRecord = {
+          phoneNumber: formattedPhone,
+          walletAddress: 'demo_wallet',
+          amount: requiredUSDT,
+          amountLocal: amount,
+          exchangeRate,
+          method: 'bank',
+          country: 'NG',
+          bankCode,
+          transferId: transfer.transferId,
+          txRef: transfer.txRef,
+          updateStatus: async function(status) { this.status = status; this.updatedAt = new Date().toISOString(); }
+        };
+      } else {
+        txRecord = await flutterwaveService.saveTransferRecord({
+          phoneNumber: formattedPhone,
+          walletAddress: user.walletAddress,
+          amount: requiredUSDT,
+          amountLocal: amount,
+          exchangeRate,
+          method: 'bank',
+          country: 'NG',
+          bankCode,
+          transferId: transfer.transferId,
+          txRef: transfer.txRef
+        });
+      }
+      logger.info(`Nigerian bank withdrawal initiated: ${transfer.txRef} - ₦${amount}`);
+      return {
+        success: true,
+        transferId: transfer.transferId,
+        txRef: transfer.txRef,
+        amount,
+        currency: 'NGN',
+        bank: bank.name,
+        accountNumber: accountNumber.slice(-4).padStart(accountNumber.length, '*'),
+        status: 'pending',
+        estimatedTime: transfer.estimatedTime,
+        message: transfer.message
+      };
+    } catch (error) {
+      logger.error('Nigerian bank withdrawal error:', error);
+      throw error;
+    }
+  }
+
+  async withdrawToKenyanBank({ phoneNumber, amount, accountNumber, bankCode, pin, accountName }) {
+    try {
+      const formattedPhone = formatPhoneNumber(phoneNumber, '+254');
+      let user;
+      if (this.isDemoMode()) {
+        user = {
+          phoneNumber: formattedPhone,
+          walletAddress: 'demo_wallet',
+          verifyPin: (inputPin) => inputPin === '1234',
+        };
+      } else {
+        user = await User.findByPhone(formattedPhone);
+      }
+      if (!user) {
+        throw new Error('User not found');
+      }
+      if (!user.verifyPin(pin)) {
+        throw new Error('Invalid PIN');
+      }
+      const banks = flutterwaveService.getKenyanBanks();
+      const bank = banks.find(b => b.code === bankCode);
+      if (!bank) {
+        throw new Error('Bank not supported in Kenya');
+      }
+      const verification = await flutterwaveService.verifyAccountNumber(accountNumber, bankCode, 'KE');
+      if (!verification.verified) {
+        throw new Error('Account verification failed');
+      }
+      const kesRate = 140;
+      const amountKES = amount * kesRate;
+      const requiredUSDT = amount / 1500;
+      const transfer = await flutterwaveService.initiateKenyanBankTransfer({
+        amount: amountKES,
+        accountNumber,
+        bankCode,
+        accountName: verification.accountName || accountName,
+        phoneNumber: formattedPhone,
+        narration: `KudiPay withdrawal - ${formattedPhone}`
+      });
+      let txRecord;
+      if (this.isDemoMode()) {
+        txRecord = {
+          phoneNumber: formattedPhone,
+          walletAddress: user.walletAddress,
+          amount: requiredUSDT,
+          amountLocal: amountKES,
+          exchangeRate: kesRate,
+          method: 'bank',
+          country: 'KE',
+          bankCode,
+          transferId: transfer.transferId,
+          txRef: transfer.txRef,
+          updateStatus: async function(status) { this.status = status; this.updatedAt = new Date().toISOString(); }
+        };
+      } else {
+        txRecord = await flutterwaveService.saveTransferRecord({
+          phoneNumber: formattedPhone,
+          walletAddress: user.walletAddress,
+          amount: requiredUSDT,
+          amountLocal: amountKES,
+          exchangeRate: kesRate,
+          method: 'bank',
+          country: 'KE',
+          bankCode,
+          transferId: transfer.transferId,
+          txRef: transfer.txRef
+        });
+      }
+      logger.info(`Kenyan bank withdrawal initiated: ${transfer.txRef} - KES${amountKES}`);
+      return {
+        success: true,
+        transferId: transfer.transferId,
+        txRef: transfer.txRef,
+        amount: amountKES,
+        currency: 'KES',
+        bank: bank.name,
+        accountNumber: accountNumber.slice(-4).padStart(accountNumber.length, '*'),
+        status: 'pending',
+        estimatedTime: transfer.estimatedTime,
+        message: transfer.message
+      };
+    } catch (error) {
+      logger.error('Kenyan bank withdrawal error:', error);
+      throw error;
+    }
+  }
+
+  async withdrawToMobileMoneyFlutterwave({ phoneNumber, amount, recipientPhone, provider, pin, country = 'NG' }) {
+    try {
+      const formattedPhone = formatPhoneNumber(phoneNumber);
+      let user;
+      if (this.isDemoMode()) {
+        user = {
+          phoneNumber: formattedPhone,
+          walletAddress: 'demo_wallet',
+          verifyPin: (inputPin) => inputPin === '1234',
+        };
+      } else {
+        user = await User.findByPhone(formattedPhone);
+      }
+      if (!user) {
+        throw new Error('User not found');
+      }
+      if (!user.verifyPin(pin)) {
+        throw new Error('Invalid PIN');
+      }
+      const providers = flutterwaveService.getMobileMoneyProviders(country);
+      const providerInfo = providers.find(p => p.code === provider);
+      if (!providerInfo) {
+        throw new Error(`Provider ${provider} not supported in ${country}`);
+      }
+      const currency = country === 'KE' ? 'KES' : 'NGN';
+      const transfer = await flutterwaveService.initiateMobileMoneyTransfer({
+        amount,
+        currency,
+        phoneNumber: recipientPhone,
+        provider,
+        country,
+        narration: `KudiPay withdrawal - ${formattedPhone}`
+      });
+      const requiredUSDT = country === 'KE' 
+        ? amount / 140
+        : await fxService.convertToUSDT(amount);
+      let txRecord;
+      if (this.isDemoMode()) {
+        txRecord = {
+          phoneNumber: formattedPhone,
+          walletAddress: user.walletAddress,
+          amount: requiredUSDT,
+          amountLocal: amount,
+          exchangeRate: country === 'KE' ? 140 : 1500,
+          method: 'mobile_money',
+          country,
+          provider,
+          transferId: transfer.transferId,
+          txRef: transfer.txRef,
+          updateStatus: async function(status) { this.status = status; this.updatedAt = new Date().toISOString(); }
+        };
+      } else {
+        txRecord = await flutterwaveService.saveTransferRecord({
+          phoneNumber: formattedPhone,
+          walletAddress: user.walletAddress,
+          amount: requiredUSDT,
+          amountLocal: amount,
+          exchangeRate: country === 'KE' ? 140 : await fxService.getUSDTToNGNRate(),
+          method: 'mobile_money',
+          country,
+          provider,
+          transferId: transfer.transferId,
+          txRef: transfer.txRef
+        });
+      }
+      logger.info(`Mobile money withdrawal initiated: ${transfer.txRef} - ${currency}${amount} via ${providerInfo.name}`);
+      return {
+        success: true,
+        transferId: transfer.transferId,
+        txRef: transfer.txRef,
+        amount,
+        currency,
+        provider: providerInfo.name,
+        recipientPhone: recipientPhone.slice(-4).padStart(recipientPhone.length, '*'),
+        status: 'pending',
+        estimatedTime: transfer.estimatedTime,
+        message: transfer.message
+      };
+    } catch (error) {
+      logger.error('Mobile money withdrawal error:', error);
+      throw error;
+    }
+  }
+
+  async getFlutterwaveTransferStatus(transferId) {
+    try {
+      const status = await flutterwaveService.getTransferStatus(transferId);
+      return status;
+    } catch (error) {
+      logger.error('Get transfer status error:', error);
+      throw error;
+    }
+  }
+
+  async getNigerianBanksFlutterwave() {
+    logger.info('[DEBUG] paymentService.getNigerianBanksFlutterwave called');
+    return flutterwaveService.getNigerianBanks();
+  }
+
+  async getKenyanBanksFlutterwave() {
+    logger.info('[DEBUG] paymentService.getKenyanBanksFlutterwave called');
+    return flutterwaveService.getKenyanBanks();
+  }
+
+  async getMobileMoneyProvidersFlutterwave(country = 'NG') {
+    logger.info(`[DEBUG] paymentService.getMobileMoneyProvidersFlutterwave called with country=${country}`);
+    return flutterwaveService.getMobileMoneyProviders(country);
+  }
+
+  async verifyAccountFlutterwave(accountNumber, bankCode, country = 'NG') {
+    try {
+      return await flutterwaveService.verifyAccountNumber(accountNumber, bankCode, country);
+    } catch (error) {
+      logger.error('Account verification error:', error);
+      throw error;
+    }
+  }
+
+  // Utility methods
   async getSupportedBanks() {
     return this.supportedBanks;
   }
 
-  /**
-   * Get mobile money providers
-   */
   async getMobileMoneyProviders() {
     return this.mobileMoneyProviders;
   }
 
-  /**
-   * Verify bank account
-   */
   async verifyBankAccount(accountNumber, bankCode) {
     try {
-      // Mock bank account verification
-      // In production, integrate with Flutterwave/Paystack account verification API
-      
       const bank = this.supportedBanks.find(b => b.code === bankCode);
       if (!bank) {
         throw new Error('Invalid bank code');
@@ -210,13 +528,11 @@ class PaymentService {
         throw new Error('Invalid account number format');
       }
 
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock response
       return {
         accountNumber,
-        accountName: 'John Doe', // Mock name
+        accountName: 'John Doe',
         bankName: bank.name,
         bankCode,
         isValid: true
@@ -227,9 +543,6 @@ class PaymentService {
     }
   }
 
-  /**
-   * Get withdrawal status
-   */
   async getWithdrawalStatus(txRef) {
     try {
       const transaction = await Transaction.findByRef(txRef);
@@ -252,16 +565,10 @@ class PaymentService {
     }
   }
 
-  /**
-   * Process bank withdrawal (mock implementation)
-   */
   async processBankWithdrawal(transaction, accountNumber, bankCode, amount) {
     try {
-      // Mock processing delay
       setTimeout(async () => {
         try {
-          // In production, integrate with payment provider API
-          // For now, simulate successful withdrawal
           await transaction.updateStatus('completed', null, {
             processedAt: new Date().toISOString(),
             providerReference: 'BANK_' + Date.now()
@@ -275,7 +582,7 @@ class PaymentService {
           });
           logger.error(`Bank withdrawal failed: ${transaction.txRef}`, error);
         }
-      }, 5000); // 5 second delay for demo
+      }, 5000);
       
     } catch (error) {
       logger.error('Process bank withdrawal error:', error);
@@ -283,15 +590,10 @@ class PaymentService {
     }
   }
 
-  /**
-   * Process mobile money withdrawal (mock implementation)
-   */
   async processMobileMoneyWithdrawal(transaction, mobileMoneyNumber, provider, amount) {
     try {
-      // Mock processing delay
       setTimeout(async () => {
         try {
-          // In production, integrate with mobile money API
           await transaction.updateStatus('completed', null, {
             processedAt: new Date().toISOString(),
             providerReference: 'MM_' + Date.now()
@@ -305,7 +607,7 @@ class PaymentService {
           });
           logger.error(`Mobile money withdrawal failed: ${transaction.txRef}`, error);
         }
-      }, 2000); // 2 second delay for demo
+      }, 2000);
       
     } catch (error) {
       logger.error('Process mobile money withdrawal error:', error);

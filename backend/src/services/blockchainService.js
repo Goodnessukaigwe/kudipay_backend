@@ -5,7 +5,12 @@ const logger = require('../utils/logger');
 class BlockchainService {
   constructor() {
     this.provider = provider;
-    this.wallet = getWallet(); // May be null if no private key configured
+    this.wallet = null;
+    try {
+      this.wallet = getWallet();
+    } catch (error) {
+      logger.warn('Wallet not configured - blockchain operations will be limited');
+    }
   }
 
   /**

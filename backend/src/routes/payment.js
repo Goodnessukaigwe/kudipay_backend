@@ -2,22 +2,23 @@ const express = require('express');
 const router = express.Router();
 const paymentController = require('../controllers/paymentController');
 
-// Initiate withdrawal to bank account
+// Legacy endpoints
 router.post('/withdraw/bank', paymentController.withdrawToBank);
-
-// Initiate withdrawal to mobile money
 router.post('/withdraw/mobile-money', paymentController.withdrawToMobileMoney);
-
-// Get supported banks
 router.get('/banks', paymentController.getSupportedBanks);
-
-// Get supported mobile money providers
 router.get('/mobile-money/providers', paymentController.getMobileMoneyProviders);
-
-// Verify bank account
 router.post('/verify/bank-account', paymentController.verifyBankAccount);
-
-// Get withdrawal status
 router.get('/withdrawal/:txRef/status', paymentController.getWithdrawalStatus);
+
+// Flutterwave endpoints
+router.post('/flutterwave/withdraw/ng-bank', paymentController.withdrawToNigerianBank);
+router.post('/flutterwave/withdraw/ke-bank', paymentController.withdrawToKenyanBank);
+router.post('/flutterwave/withdraw/mobile-money', paymentController.withdrawToMobileMoneyFlutterwave);
+router.get('/flutterwave/banks/ng', paymentController.getNigerianBanks);
+router.get('/flutterwave/banks/ke', paymentController.getKenyanBanks);
+router.get('/flutterwave/mobile-money/providers', paymentController.getMobileMoneyProvidersFlutterwave);
+router.post('/flutterwave/verify/account', paymentController.verifyAccountFlutterwave);
+router.get('/flutterwave/transfer/:transferId/status', paymentController.getFlutterwaveTransferStatus);
+router.post('/flutterwave/webhook', paymentController.handleFlutterwaveWebhook);
 
 module.exports = router;
