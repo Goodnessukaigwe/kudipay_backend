@@ -18,7 +18,11 @@ class UssdService {
     try {
       // Normalize phone number to international format (+234...)
       const normalizedPhone = normalizePhoneNumber(phoneNumber);
-      const userInput = text.trim();
+      
+      // Parse user input - Africa's Talking sends full journey (e.g., "1*1234*1234")
+      // We need only the last part after the last asterisk
+      const textArray = text.trim().split('*');
+      const userInput = textArray[textArray.length - 1];
       
       // Get or create session using normalized phone
       let session = await UssdSession.findActive(sessionId, normalizedPhone);
