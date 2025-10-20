@@ -392,3 +392,57 @@
 {"ETH_NGN":2495146.5052471305,"ETH_USD":1630.4051909534378,"USDT_NGN":1494.4688113397988,"level":"info","message":"Exchange rates updated","service":"kudipay-backend","timestamp":"2025-10-20 22:22:32"}
 {"ETH_NGN":2535500.2929836954,"ETH_USD":1612.5261961974047,"USDT_NGN":1494.6529381338983,"level":"info","message":"Exchange rates updated","service":"kudipay-backend","timestamp":"2025-10-20 22:27:33"}
 {"ETH_NGN":2563155.4499524166,"ETH_USD":1566.7775323822032,"USDT_NGN":1487.254746631803,"level":"info","message":"Exchange rates updated","service":"kudipay-backend","timestamp":"2025-10-20 22:32:33"}
+{"level":"info","markup":{"BTC_NGN":0.025,"ETH_NGN":0.025,"USDC_NGN":0.02,"USDT_NGN":0.02,"maxMarkup":0.05,"minMarkup":0.01,"volatilityAdjustment":true},"message":"FxEngine initialized with production configuration","service":"kudipay-backend","supportedPairs":9,"timestamp":"2025-10-20 23:30:27"}
+{"error":"Currency USD not supported by Binance provider","level":"error","message":"BinanceProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:30:27"}
+{"level":"error","message":"Provider primary failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:30:27"}
+{"error":"No Chainlink feed available for USD/USD","level":"error","message":"ChainlinkProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:30:27"}
+{"level":"error","message":"Provider secondary failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:30:27"}
+{"level":"warn","message":"CoinGecko failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:30:27"}
+{"level":"info","message":"PostgreSQL database connected successfully","service":"kudipay-backend","timestamp":"2025-10-20 23:30:27"}
+{"level":"info","message":"KudiPay Backend server running on port 3000","service":"kudipay-backend","timestamp":"2025-10-20 23:30:27"}
+{"level":"info","message":"Environment: development","service":"kudipay-backend","timestamp":"2025-10-20 23:30:27"}
+{"error":"Binance API request failed: timeout of 10000ms exceeded","level":"error","message":"BinanceProvider.getRate error:","pair":"ETH/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:32:37"}
+{"level":"error","message":"Provider primary failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:32:37"}
+{"error":"Binance API request failed: timeout of 10000ms exceeded","level":"error","message":"BinanceProvider.getRate error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:32:41"}
+{"error":"request timeout (code=TIMEOUT, version=6.15.0)","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:32:42"}
+{"error":"Failed to read Chainlink feed for ETH/USD: request timeout (code=TIMEOUT, version=6.15.0)","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:32:42"}
+{"level":"error","message":"Provider secondary failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:32:42"}
+{"error":"Currency USD not supported by Binance provider","level":"error","message":"BinanceProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:32:50"}
+{"error":"Currency NGN not supported by Binance provider","level":"error","message":"BinanceProvider.getRate error:","pair":"NGN/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:32:50"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:32:52"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:32:52"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:32:52"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:32:52"}
+{"error":"No Chainlink feed available for USD/USD","level":"error","message":"ChainlinkProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:32:52"}
+{"level":"warn","message":"CoinGecko failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:32:54"}
+{"error":"Currency USD not supported by Binance provider","level":"error","message":"BinanceProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:32:57"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:35:16"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:35:16"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:35:17"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:35:17"}
+{"error":"No Chainlink feed available for USD/USD","level":"error","message":"ChainlinkProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:35:17"}
+{"level":"warn","message":"CoinGecko failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:35:18"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:36:15"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:36:15"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:36:16"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:36:16"}
+{"error":"No Chainlink feed available for USD/USD","level":"error","message":"ChainlinkProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:36:16"}
+{"level":"warn","message":"CoinGecko failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:36:17"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:37:07"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:37:07"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:37:08"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:37:08"}
+{"error":"No Chainlink feed available for USD/USD","level":"error","message":"ChainlinkProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:37:08"}
+{"level":"warn","message":"CoinGecko failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:37:09"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:38:02"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:38:02"}
+{"error":"Cannot convert a BigInt value to a number","feedAddress":"0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70","level":"error","message":"Chainlink feed read error:","pair":"ETH/USD","service":"kudipay-backend","timestamp":"2025-10-20 23:38:03"}
+{"error":"Failed to read Chainlink feed for ETH/USD: Cannot convert a BigInt value to a number","level":"error","message":"ChainlinkProvider.getRate error:","pair":"ETH/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:38:03"}
+{"error":"No Chainlink feed available for USD/USD","level":"error","message":"ChainlinkProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:38:03"}
+{"level":"warn","message":"CoinGecko failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:38:04"}
+{"error":"No Chainlink feed available for USD/USD","level":"error","message":"ChainlinkProvider.getRate error:","pair":"USD/NGN","service":"kudipay-backend","timestamp":"2025-10-20 23:39:00"}
+{"level":"warn","message":"CoinGecko failed:","service":"kudipay-backend","timestamp":"2025-10-20 23:39:01"}
+{"level":"info","markup":{"BTC_NGN":0.025,"ETH_NGN":0.025,"USDC_NGN":0.02,"USDT_NGN":0.02,"maxMarkup":0.05,"minMarkup":0.01,"volatilityAdjustment":true},"message":"FxEngine initialized with production configuration","service":"kudipay-backend","supportedPairs":9,"timestamp":"2025-10-20 23:50:17"}
+{"level":"info","message":"PostgreSQL database connected successfully","service":"kudipay-backend","timestamp":"2025-10-20 23:50:17"}
+{"level":"info","message":"KudiPay Backend server running on port 3000","service":"kudipay-backend","timestamp":"2025-10-20 23:50:17"}
+{"level":"info","message":"Environment: development","service":"kudipay-backend","timestamp":"2025-10-20 23:50:17"}
