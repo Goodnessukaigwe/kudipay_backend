@@ -35,6 +35,17 @@ class BinanceProvider {
    */
   async getRate(fromCurrency, toCurrency) {
     try {
+      // Handle USD/NGN fiat-to-fiat conversion FIRST (before crypto checks)
+      if (fromCurrency === 'USD' && toCurrency === 'NGN') {
+        return await this.getUsdToNgnRate();
+      }
+      
+      // Handle NGN/USD reverse conversion
+      if (fromCurrency === 'NGN' && toCurrency === 'USD') {
+        const usdToNgnRate = await this.getUsdToNgnRate();
+        return 1 / usdToNgnRate;
+      }
+      
       // Handle stablecoin to USD (always 1:1)
       if (this.isStablecoin(fromCurrency) && toCurrency === 'USD') {
         return 1.0;
@@ -123,20 +134,12 @@ class BinanceProvider {
    */
   async getUsdToNgnRate() {
     try {
-      // Option 1: Use USDT/NGN P2P rate (if available)
-      // Option 2: Use external API as Binance doesn't have direct NGN pairs
-      
-      // For now, fetch from a reliable NGN/USD API
-      // You can use:
-      // - CBN (Central Bank of Nigeria) official rate
-      // - Flutterwave rate API
-      // - Paystack rate API
-      
-      const response = await axios.get('https://api.exchangerate-api.com/v4/latest/USD', {
+      // Use open.er-api.com which provides free NGN rates without API key
+      const response = await axios.get('https://open.er-api.com/v6/latest/USD', {
         timeout: this.timeout
       });
       
-      // Note: exchangerate-api.com might not have NGN, so fallback to estimated rate
+      // Extract NGN rate from response
       const ngnRate = response.data.rates.NGN || 1550; // Fallback to ~1550 NGN/USD
       
       logger.debug(`USD/NGN rate: ${ngnRate}`);

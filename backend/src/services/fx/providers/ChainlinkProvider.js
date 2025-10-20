@@ -107,17 +107,19 @@ class ChainlinkProvider {
         await contract.latestRoundData();
       
       // Get decimals
-      const decimals = await contract.decimals();
+      const decimals = Number((await contract.decimals()).toString());
       
       // Validate the data
       this.validatePriceData(roundId, answer, updatedAt, answeredInRound);
       
-      // Convert to human-readable price
-      const price = Number(answer) / Math.pow(10, decimals);
+      // Convert BigInt to number safely (ethers.js v6 returns BigInt)
+      // Must convert to string first, then to number
+      const answerString = answer.toString();
+      const price = Number(answerString) / Math.pow(10, decimals);
       
       logger.debug(`Chainlink price fetched: ${pair} = ${price}`, {
         roundId: roundId.toString(),
-        updatedAt: new Date(Number(updatedAt) * 1000).toISOString()
+        updatedAt: new Date(Number(updatedAt.toString()) * 1000).toISOString()
       });
       
       return price;
@@ -136,22 +138,23 @@ class ChainlinkProvider {
    * Validate Chainlink price data for freshness and completeness
    */
   validatePriceData(roundId, answer, updatedAt, answeredInRound) {
-    // Check if answer is valid
-    if (answer <= 0) {
+    // Check if answer is valid (convert BigInt to Number for comparison)
+    if (Number(answer.toString()) <= 0) {
       throw new Error('Invalid price: answer is zero or negative');
     }
     
-    // Check if round is complete
+    // Check if round is complete (compare BigInts properly)
     if (answeredInRound < roundId) {
       throw new Error('Stale price: round not complete');
     }
     
     // Check price freshness (not older than threshold)
-    const priceAge = Date.now() - (Number(updatedAt) * 1000);
+    const updatedAtNumber = Number(updatedAt.toString());
+    const priceAge = Date.now() - (updatedAtNumber * 1000);
     if (priceAge > this.stalePriceThreshold) {
       logger.warn('Chainlink price is stale', {
         ageMinutes: Math.floor(priceAge / 60000),
-        updatedAt: new Date(Number(updatedAt) * 1000).toISOString()
+        updatedAt: new Date(updatedAtNumber * 1000).toISOString()
       });
       // Don't throw, just warn - some feeds update less frequently
     }
@@ -207,13 +210,15 @@ class ChainlinkProvider {
       
       // Chainlink provides getRoundData for historical prices
       const historicalData = await contract.getRoundData(roundId);
-      const decimals = await contract.decimals();
+      const decimals = Number((await contract.decimals()).toString());
       
-      const price = Number(historicalData.answer) / Math.pow(10, decimals);
+      // Convert BigInt to number safely
+      const answerString = historicalData.answer.toString();
+      const price = Number(answerString) / Math.pow(10, decimals);
       
       return {
         price,
-        timestamp: Number(historicalData.updatedAt),
+        timestamp: Number(historicalData.updatedAt.toString()),
         roundId: historicalData.roundId.toString()
       };
       
@@ -237,7 +242,7 @@ class ChainlinkProvider {
     try {
       const contract = this.getContract(feedAddress);
       const latestRound = await contract.latestRoundData();
-      const decimals = await contract.decimals();
+      const decimals = Number((await contract.decimals()).toString());
       
       let totalPrice = 0;
       let validRounds = 0;
@@ -249,7 +254,9 @@ class ChainlinkProvider {
           const roundData = await contract.getRoundData(roundId);
           
           if (roundData.answer > 0) {
-            const price = Number(roundData.answer) / Math.pow(10, decimals);
+            // Convert BigInt to number safely
+            const answerString = roundData.answer.toString();
+            const price = Number(answerString) / Math.pow(10, decimals);
             totalPrice += price;
             validRounds++;
           }
