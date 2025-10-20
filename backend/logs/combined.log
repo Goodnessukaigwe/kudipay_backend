@@ -446,3 +446,15 @@
 {"level":"info","message":"PostgreSQL database connected successfully","service":"kudipay-backend","timestamp":"2025-10-20 23:50:17"}
 {"level":"info","message":"KudiPay Backend server running on port 3000","service":"kudipay-backend","timestamp":"2025-10-20 23:50:17"}
 {"level":"info","message":"Environment: development","service":"kudipay-backend","timestamp":"2025-10-20 23:50:17"}
+{"level":"info","markup":{"BTC_NGN":0.025,"ETH_NGN":0.025,"USDC_NGN":0.02,"USDT_NGN":0.02,"maxMarkup":0.05,"minMarkup":0.01,"volatilityAdjustment":true},"message":"FxEngine initialized with production configuration","service":"kudipay-backend","supportedPairs":9,"timestamp":"2025-10-20 23:53:56"}
+{"level":"info","message":"PostgreSQL database connected successfully","service":"kudipay-backend","timestamp":"2025-10-20 23:53:56"}
+{"level":"info","message":"KudiPay Backend server running on port 3000","service":"kudipay-backend","timestamp":"2025-10-20 23:53:56"}
+{"level":"info","message":"Environment: development","service":"kudipay-backend","timestamp":"2025-10-20 23:53:56"}
+{"level":"info","message":"::1 - - [20/Oct/2025:22:54:04 +0000] \"GET /health HTTP/1.1\" 200 93 \"-\" \"curl/8.5.0\"","service":"kudipay-backend","timestamp":"2025-10-20 23:54:04"}
+{"level":"info","message":"USSD Request: +2348012345678 - Initial","service":"kudipay-backend","timestamp":"2025-10-20 23:54:59"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Oct/2025:22:54:59 +0000] \"POST /api/ussd/callback HTTP/1.1\" 200 150 \"-\" \"curl/8.5.0\"","service":"kudipay-backend","timestamp":"2025-10-20 23:54:59"}
+{"ETH_NGN":2512169.686279681,"ETH_USD":1713.4411148582114,"USDT_NGN":1499.5517658272774,"level":"info","message":"Exchange rates updated","service":"kudipay-backend","timestamp":"2025-10-20 23:58:56"}
+{"level":"info","message":"USSD Request: +2348012345678 - Initial","service":"kudipay-backend","timestamp":"2025-10-21 00:02:01"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Oct/2025:23:02:01 +0000] \"POST /api/ussd/callback HTTP/1.1\" 200 185 \"-\" \"curl/8.5.0\"","service":"kudipay-backend","timestamp":"2025-10-21 00:02:01"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [20/Oct/2025:23:02:15 +0000] \"GET /health HTTP/1.1\" 200 93 \"-\" \"curl/8.5.0\"","service":"kudipay-backend","timestamp":"2025-10-21 00:02:15"}
+{"ETH_NGN":2509991.42348019,"ETH_USD":1748.0475625297297,"USDT_NGN":1501.9046519513397,"level":"info","message":"Exchange rates updated","service":"kudipay-backend","timestamp":"2025-10-21 00:03:56"}
