@@ -126,6 +126,137 @@ const validateSession = (session, requiredFields) => {
   return requiredFields.every(field => session && session[field] !== undefined);
 };
 
+/**
+ * Build payment method selection menu for Flutterwave
+ * @returns {string} - Payment methods menu
+ */
+const buildFlutterwavePaymentMethodMenu = () => {
+  const methods = {
+    '1': 'Bank Transfer',
+    '2': 'Mobile Money',
+    '3': 'Back to Main Menu'
+  };
+  
+  return buildMenu('Select Payment Method:', methods);
+};
+
+/**
+ * Build country selection menu
+ * @returns {string} - Country selection menu
+ */
+const buildCountrySelectionMenu = () => {
+  const countries = {
+    '1': 'Nigeria (NGN)',
+    '2': 'Kenya (KES)',
+    '0': 'Back'
+  };
+  
+  return buildMenu('Select Your Country:', countries);
+};
+
+/**
+ * Build bank selection prompt for Nigeria
+ * @param {Array} banks - Array of bank objects
+ * @returns {string} - Formatted bank selection menu
+ */
+const buildNigerianBankSelectionMenu = (banks) => {
+  if (!banks || banks.length === 0) {
+    return 'No banks available';
+  }
+  
+  let menu = 'Select Bank:\n';
+  banks.slice(0, 5).forEach((bank, index) => {
+    menu += `${index + 1}. ${bank.name}\n`;
+  });
+  menu += '0. Back';
+  
+  return menu;
+};
+
+/**
+ * Build bank selection prompt for Kenya
+ * @param {Array} banks - Array of bank objects
+ * @returns {string} - Formatted bank selection menu
+ */
+const buildKenyanBankSelectionMenu = (banks) => {
+  if (!banks || banks.length === 0) {
+    return 'No banks available';
+  }
+  
+  let menu = 'Select Bank:\n';
+  banks.forEach((bank, index) => {
+    menu += `${index + 1}. ${bank.name}\n`;
+  });
+  menu += '0. Back';
+  
+  return menu;
+};
+
+/**
+ * Build mobile money provider selection menu
+ * @param {Array} providers - Array of provider objects
+ * @returns {string} - Formatted provider selection menu
+ */
+const buildMobileMoneyProviderMenu = (providers) => {
+  if (!providers || providers.length === 0) {
+    return 'No mobile money providers available';
+  }
+  
+  let menu = 'Select Provider:\n';
+  providers.forEach((provider, index) => {
+    menu += `${index + 1}. ${provider.name}\n`;
+  });
+  menu += '0. Back';
+  
+  return menu;
+};
+
+/**
+ * Build account number input prompt
+ * @returns {string} - Input prompt
+ */
+const buildAccountNumberPrompt = () => {
+  return 'Enter your account number:';
+};
+
+/**
+ * Build mobile money number input prompt
+ * @returns {string} - Input prompt
+ */
+const buildMobileMoneyNumberPrompt = () => {
+  return 'Enter your mobile money number:';
+};
+
+/**
+ * Build amount input prompt for Flutterwave
+ * @returns {string} - Input prompt
+ */
+const buildFlutterwaveAmountPrompt = () => {
+  return 'Enter amount to withdraw:';
+};
+
+/**
+ * Build withdrawal confirmation message
+ * @param {number} amount - Amount
+ * @param {string} currency - Currency
+ * @param {string} method - Withdrawal method
+ * @returns {string} - Confirmation message
+ */
+const buildWithdrawalConfirmation = (amount, currency, method) => {
+  return `Confirm Withdrawal:\nAmount: ${currency}${amount}\nMethod: ${method}\n\n1. Confirm\n0. Cancel`;
+};
+
+/**
+ * Build successful Flutterwave withdrawal message
+ * @param {string} transferId - Transfer ID
+ * @param {number} amount - Amount
+ * @param {string} currency - Currency
+ * @returns {string} - Success message
+ */
+const buildFlutterwaveWithdrawalSuccess = (transferId, amount, currency) => {
+  return `Withdrawal Successful!\nAmount: ${currency}${amount}\nRef: ${transferId}\nCheck status with *123*4#`;
+};
+
 module.exports = {
   buildMenu,
   buildMainMenu,
@@ -135,5 +266,15 @@ module.exports = {
   buildWithdrawalSuccess,
   parseAmount,
   buildTransactionHistory,
-  validateSession
+  validateSession,
+  buildFlutterwavePaymentMethodMenu,
+  buildCountrySelectionMenu,
+  buildNigerianBankSelectionMenu,
+  buildKenyanBankSelectionMenu,
+  buildMobileMoneyProviderMenu,
+  buildAccountNumberPrompt,
+  buildMobileMoneyNumberPrompt,
+  buildFlutterwaveAmountPrompt,
+  buildWithdrawalConfirmation,
+  buildFlutterwaveWithdrawalSuccess
 };

@@ -15,7 +15,8 @@ const connectDB = async () => {
     logger.info('PostgreSQL database connected successfully');
   } catch (error) {
     logger.error('Database connection failed:', error);
-    throw error;
+    logger.warn('Continuing in demo mode without database');
+    // Don't throw - allow demo mode
   }
 };
 
