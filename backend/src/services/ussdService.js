@@ -2,6 +2,7 @@ const User = require('../models/User');
 const UssdSession = require('../models/UssdSession');
 const walletService = require('./walletService');
 const fxService = require('./fxService');
+const smsService = require('./smsService');
 const paymentService = require('./paymentService');
 const flutterwaveService = require('./flutterwaveService');
 const ussdBuilder = require('../utils/ussdBuilder');
@@ -183,6 +184,13 @@ class UssdService {
       
       const balance = await walletService.getBalance(user.walletAddress);
       const ngnBalance = await fxService.convertToNGN(balance.usdt);
+      
+      // Send SMS notification with balance (don't wait for it)
+      smsService.sendBalanceNotification(session.phoneNumber, user.walletAddress, {
+        ngn: ngnBalance,
+        usd: balance.usdt,
+        eth: balance.eth
+      }).catch(err => logger.warn('SMS notification failed:', err.message));
       
       await session.end();
       return `END Your current balance is: ₦${ngnBalance.toLocaleString()} (${balance.usdt} USDT)`;

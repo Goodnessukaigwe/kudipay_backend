@@ -3,6 +3,7 @@ const Transaction = require('../models/Transaction');
 const blockchainService = require('./blockchainService');
 const phoneWalletMappingService = require('./phoneWalletMappingService');
 const fxService = require('./fxService');
+const smsService = require('./smsService');
 const logger = require('../utils/logger');
 const { generateWalletFromPhone, generateTxRef, etherToWei, weiToEther, normalizePhoneNumber, isValidPhoneNumber } = require('../utils/helpers');
 
@@ -82,6 +83,10 @@ class WalletService {
         walletAddress: user.walletAddress,
         blockchainTxHash: user.blockchainTxHash
       });
+      
+      // Send SMS notification (don't wait for it)
+      smsService.sendRegistrationConfirmation(normalizedPhone, user.walletAddress)
+        .catch(err => logger.warn('SMS notification failed:', err.message));
       
       return {
         phoneNumber: user.phoneNumber,
@@ -198,6 +203,23 @@ class WalletService {
       await transaction.updateStatus('completed', blockchainResult.hash);
       
       logger.info(`Transaction completed: ${txRef} - ${amount} NGN from ${fromPhone} to ${toPhone}`);
+      
+      // Send SMS notifications to both sender and receiver (don't wait)
+      smsService.sendMoneySentConfirmation(
+        normalizedFromPhone,
+        normalizedToPhone,
+        amount,
+        'NGN',
+        blockchainResult.hash
+      ).catch(err => logger.warn('SMS to sender failed:', err.message));
+      
+      smsService.sendMoneyReceivedNotification(
+        normalizedToPhone,
+        normalizedFromPhone,
+        amount,
+        'NGN',
+        blockchainResult.hash
+      ).catch(err => logger.warn('SMS to receiver failed:', err.message));
       
       return {
         txRef,
