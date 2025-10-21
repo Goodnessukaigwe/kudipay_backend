@@ -2,6 +2,7 @@ const User = require('../models/User');
 const UssdSession = require('../models/UssdSession');
 const walletService = require('./walletService');
 const fxService = require('./fxService');
+const smsService = require('./smsService');
 const paymentService = require('./paymentService');
 const flutterwaveService = require('./flutterwaveService');
 const ussdBuilder = require('../utils/ussdBuilder');
@@ -18,7 +19,11 @@ class UssdService {
     try {
       // Normalize phone number to international format (+234...)
       const normalizedPhone = normalizePhoneNumber(phoneNumber);
-      const userInput = text.trim();
+      
+      // Parse user input - Africa's Talking sends full journey (e.g., "1*1234*1234")
+      // We need only the last part after the last asterisk
+      const textArray = text.trim().split('*');
+      const userInput = textArray[textArray.length - 1];
       
       // Get or create session using normalized phone
       let session = await UssdSession.findActive(sessionId, normalizedPhone);
@@ -179,6 +184,13 @@ class UssdService {
       
       const balance = await walletService.getBalance(user.walletAddress);
       const ngnBalance = await fxService.convertToNGN(balance.usdt);
+      
+      // Send SMS notification with balance (don't wait for it)
+      smsService.sendBalanceNotification(session.phoneNumber, user.walletAddress, {
+        ngn: ngnBalance,
+        usd: balance.usdt,
+        eth: balance.eth
+      }).catch(err => logger.warn('SMS notification failed:', err.message));
       
       await session.end();
       return `END Your current balance is: ₦${ngnBalance.toLocaleString()} (${balance.usdt} USDT)`;

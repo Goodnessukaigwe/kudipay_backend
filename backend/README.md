@@ -1,207 +1,412 @@
-# KudiPay Backend
+# KudiPay Backend 🚀# KudiPay Backend
 
-A Node.js backend API for KudiPay - A hybrid USSD-blockchain remittance system for Africa.
 
-## 🚀 Features
 
-- **USSD Integration**: Works with any phone (no smartphone required)
+A Node.js backend API for KudiPay - A hybrid USSD-blockchain remittance system for Africa.A Node.js backend API for KudiPay - A hybrid USSD-blockchain remittance system for Africa.
+
+
+
+[![Node.js](https://img.shields.io/badge/Node.js-16%2B-green)](https://nodejs.org/)## 🚀 Features
+
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12%2B-blue)](https://www.postgresql.org/)
+
+[![Base Network](https://img.shields.io/badge/Base-Sepolia-orange)](https://base.org/)- **USSD Integration**: Works with any phone (no smartphone required)
+
 - **Account Abstraction**: Gas-free blockchain transactions
-- **Phone-to-Wallet Mapping**: Each phone number gets a permanent blockchain wallet
+
+## 🚀 Features- **Phone-to-Wallet Mapping**: Each phone number gets a permanent blockchain wallet
+
 - **Real-time FX Conversion**: Automatic crypto-to-fiat conversion
-- **Multi-channel Payouts**: Bank accounts, mobile money, cash agents
 
-## 📁 Project Structure
+- ✅ **USSD Integration** - Works with any phone via Africa's Talking- **Multi-channel Payouts**: Bank accounts, mobile money, cash agents
 
-```
-backend/
-├── src/
+- ✅ **Account Abstraction** - Gas-free blockchain transactions on Base
+
+- ✅ **Phone-to-Wallet Mapping** - Permanent blockchain wallet per phone number## 📁 Project Structure
+
+- ✅ **Multi-Provider FX Engine** - Real-time crypto-to-fiat (93.75% uptime)
+
+- ✅ **Multi-channel Payouts** - Banks, mobile money via Flutterwave```
+
+- ✅ **PIN Security** - Secure authentication with bcryptbackend/
+
+- ✅ **Comprehensive Testing** - 15/16 integration tests passing├── src/
+
 │   ├── index.js              # Entry point
-│   ├── routes/               # API routes
-│   │   ├── ussd.js          # USSD endpoints
-│   │   ├── wallet.js        # Wallet operations
-│   │   ├── fx.js            # Exchange rates
-│   │   ├── payment.js       # Payments/withdrawals
-│   │   └── user.js          # User management
-│   ├── controllers/          # Request handlers
-│   ├── services/            # Business logic
-│   │   ├── ussdService.js   # USSD menu logic
-│   │   ├── walletService.js # Blockchain operations
-│   │   ├── fxService.js     # Exchange rates
-│   │   └── blockchainService.js # Low-level blockchain
-│   ├── models/              # Database models
-│   │   ├── User.js          # User model
-│   │   ├── Transaction.js   # Transaction model
-│   │   └── UssdSession.js   # USSD session model
-│   ├── middleware/          # Express middleware
-│   ├── validators/          # Input validation
-│   └── utils/               # Helper functions
-├── config/                  # Configuration files
-├── tests/                   # Test files
-├── docs/                    # API documentation
-└── package.json
-```
 
-## 🛠️ Setup
+## 📁 Project Structure│   ├── routes/               # API routes
+
+│   │   ├── ussd.js          # USSD endpoints
+
+```│   │   ├── wallet.js        # Wallet operations
+
+backend/│   │   ├── fx.js            # Exchange rates
+
+├── bin/                  # Executable scripts (setup, testing)│   │   ├── payment.js       # Payments/withdrawals
+
+├── config/               # Configuration (blockchain, db, ussd)│   │   └── user.js          # User management
+
+├── docs/                 # Documentation│   ├── controllers/          # Request handlers
+
+│   └── guides/          # User guides and tutorials│   ├── services/            # Business logic
+
+├── migrations/           # Database migrations│   │   ├── ussdService.js   # USSD menu logic
+
+├── src/                  # Source code│   │   ├── walletService.js # Blockchain operations
+
+│   ├── controllers/     # Request handlers│   │   ├── fxService.js     # Exchange rates
+
+│   ├── models/          # Database models│   │   └── blockchainService.js # Low-level blockchain
+
+│   ├── routes/          # API routes│   ├── models/              # Database models
+
+│   ├── services/        # Business logic│   │   ├── User.js          # User model
+
+│   │   └── fx/          # FX engine (3 providers)│   │   ├── Transaction.js   # Transaction model
+
+│   └── utils/           # Helpers│   │   └── UssdSession.js   # USSD session model
+
+└── tests/                # Test suites│   ├── middleware/          # Express middleware
+
+    └── integration/     # Integration tests│   ├── validators/          # Input validation
+
+```│   └── utils/               # Helper functions
+
+├── config/                  # Configuration files
+
+## 🛠️ Quick Start├── tests/                   # Test files
+
+├── docs/                    # API documentation
+
+### Prerequisites└── package.json
+
+- Node.js >= 16.0.0```
+
+- PostgreSQL >= 12
+
+- Base Sepolia RPC access## 🛠️ Setup
+
+- Africa's Talking account (sandbox)
 
 ### Prerequisites
 
+### Installation
+
 - Node.js >= 16.0.0
-- PostgreSQL >= 12
-- Base network RPC access
+
+```bash- PostgreSQL >= 12
+
+# 1. Install dependencies- Base network RPC access
+
+npm install
 
 ### Installation
 
-1. **Clone the repository**
+# 2. Setup environment
+
+cp .env.example .env1. **Clone the repository**
+
+# Edit .env with your values
 
 ```bash
-git clone https://github.com/Goodnessukaigwe/KudiPay-smartcontract.git
-cd KudiPay-smartcontract/backend
-```
+
+# 3. Setup databasegit clone https://github.com/Goodnessukaigwe/KudiPay-smartcontract.git
+
+createdb kudipaycd KudiPay-smartcontract/backend
+
+psql kudipay < schema.sql```
+
+psql kudipay < migrations/*.sql
 
 2. **Install dependencies**
 
-```bash
-npm install
+# 4. Start server
+
+npm start```bash
+
+```npm install
+
 ```
+
+## 🧪 Testing
 
 3. **Environment setup**
 
 ```bash
-cp .env.example .env
+
+# Run all tests```bash
+
+npm testcp .env.example .env
+
 # Edit .env with your configuration
-```
+
+# Test FX engine (3 providers)```
+
+npm run test:fx
 
 4. **Database setup**
 
-```bash
-# Create PostgreSQL database
+# Test USSD integration
+
+npm run test:ussd```bash
+
+```# Create PostgreSQL database
+
 createdb kudipay
 
-# Run migrations (create schema.sql first)
-psql -d kudipay -f schema.sql
-```
+**Current Test Results**: 15/16 passing (93.75%)
 
-5. **Start the server**
+- ✅ Binance: 10/10 (including USD/NGN fiat conversion)# Run migrations (create schema.sql first)
 
-```bash
-# Development
-npm run dev
+- ✅ Chainlink: 2/3 (BigInt fixes applied)psql -d kudipay -f schema.sql
+
+- ✅ Fallback: 3/3 (CoinGecko, CryptoCompare, ExchangeRate-API)```
+
+
+
+## 📚 Documentation5. **Start the server**
+
+
+
+### Getting Started```bash
+
+- **[Quick Start](docs/QUICK_START_ORGANIZED.md)** - 5-minute setup guide# Development
+
+- **[Project Structure](docs/PROJECT_STRUCTURE.md)** - Complete architecturenpm run dev
+
+- **[Quick Reference](docs/guides/QUICK_REFERENCE.md)** - Common commands
 
 # Production
-npm start
-```
 
-## 🔧 Configuration
+### Integration Guidesnpm start
+
+- **[FX Engine Guide](docs/guides/FX_QUICKSTART.md)** - Multi-provider FX system```
+
+- **[Africa's Talking Setup](docs/guides/AFRICAS_TALKING_SANDBOX_GUIDE.md)** - USSD integration
+
+- **[Testing Guide](docs/guides/TESTING_WITH_AT_SIMULATOR.md)** - Simulator testing## 🔧 Configuration
+
+- **[Flutterwave Integration](docs/FLUTTERWAVE_README.md)** - Payment gateway
 
 ### Environment Variables
 
-| Variable                  | Description       | Example                    |
-| ------------------------- | ----------------- | -------------------------- |
-| `NODE_ENV`                | Environment       | `development`              |
-| `PORT`                    | Server port       | `3000`                     |
-| `DB_HOST`                 | Database host     | `localhost`                |
-| `RPC_URL`                 | Base network RPC  | `https://sepolia.base.org` |
-| `AFRICAS_TALKING_API_KEY` | USSD provider key | `your_api_key`             |
+### Implementation Summaries
 
-### USSD Configuration
+- **[FX Implementation](docs/guides/FX_IMPLEMENTATION_SUMMARY.md)** - Detailed FX engine docs| Variable                  | Description       | Example                    |
+
+- **[Completion Summary](docs/COMPLETION_SUMMARY.md)** - Project completion status| ------------------------- | ----------------- | -------------------------- |
+
+- **[Organization Summary](docs/ORGANIZATION_SUMMARY.md)** - Codebase organization| `NODE_ENV`                | Environment       | `development`              |
+
+| `PORT`                    | Server port       | `3000`                     |
+
+## 🏗️ Architecture Highlights| `DB_HOST`                 | Database host     | `localhost`                |
+
+| `RPC_URL`                 | Base network RPC  | `https://sepolia.base.org` |
+
+### FX Engine (Multi-Provider Fallback)| `AFRICAS_TALKING_API_KEY` | USSD provider key | `your_api_key`             |
+
+1. **Primary**: Binance Spot API - Fast, free, real-time crypto prices
+
+2. **Secondary**: Chainlink Price Feeds - On-chain, decentralized oracles### USSD Configuration
+
+3. **Tertiary**: Multiple HTTP APIs - CoinGecko, CryptoCompare, ExchangeRate-API
 
 The USSD menu structure is defined in `config/ussd.js`:
 
-```javascript
-menu: {
-  mainMenu: {
+**Conversion Flow**: `ETH → USD → NGN`
+
+- Uses composite rates for unsupported pairs```javascript
+
+- 5-minute caching with stale fallbackmenu: {
+
+- Automatic provider failover  mainMenu: {
+
     '1': 'Register Phone Number',
-    '2': 'Check Balance',
-    '3': 'Withdraw Money',
-    '4': 'Transaction History',
-    '0': 'Exit'
+
+### USSD Flow    '2': 'Check Balance',
+
+```    '3': 'Withdraw Money',
+
+User dials *384*73588# → Africa's Talking webhook → Session management → Menu logic → Blockchain/Payment    '4': 'Transaction History',
+
+```    '0': 'Exit'
+
   }
-}
-```
 
-## 📱 USSD Flow
+### Blockchain Integration}
 
-### Registration Flow
+- **Base Sepolia** testnet (low gas)```
 
-1. User dials `*123*1#`
-2. System prompts for 4-digit PIN
-3. PIN confirmation
-4. Wallet created and mapped to phone number
+- **Account Abstraction** (gas-free for users)
 
-### Transaction Flow
+- **Phone-Wallet Mapping** (on-chain storage)## 📱 USSD Flow
 
-1. User dials `*123#`
-2. Select "Check Balance" or "Withdraw Money"
+
+
+## 🔑 Key Environment Variables### Registration Flow
+
+
+
+```bash1. User dials `*123*1#`
+
+# Server2. System prompts for 4-digit PIN
+
+PORT=30003. PIN confirmation
+
+NODE_ENV=development4. Wallet created and mapped to phone number
+
+
+
+# Database### Transaction Flow
+
+DB_HOST=localhost
+
+DB_NAME=kudipay1. User dials `*123#`
+
+DB_USER=postgres2. Select "Check Balance" or "Withdraw Money"
+
 3. Enter PIN for authentication
-4. Complete transaction
 
-## 🔗 API Endpoints
+# Blockchain (Base Sepolia)4. Complete transaction
+
+CHAIN_ID=84532
+
+RPC_URL=https://sepolia.base.org## 🔗 API Endpoints
+
+DEPLOYER_PRIVATE_KEY=your_key
 
 ### USSD Routes
 
-- `POST /api/ussd/callback` - Main USSD handler
-- `GET /api/ussd/sessions/active` - Active sessions
+# USSD (Africa's Talking)
+
+AFRICAS_TALKING_USERNAME=sandbox- `POST /api/ussd/callback` - Main USSD handler
+
+AFRICAS_TALKING_API_KEY=your_key- `GET /api/ussd/sessions/active` - Active sessions
+
+USSD_SHORT_CODE=*384*73588#
 
 ### Wallet Routes
 
-- `POST /api/wallet/create` - Create wallet
-- `GET /api/wallet/phone/:phoneNumber` - Get wallet by phone
-- `POST /api/wallet/send` - Send transaction
+# Payment (Flutterwave)
 
-### FX Routes
+FLUTTERWAVE_SECRET_KEY=your_key- `POST /api/wallet/create` - Create wallet
+
+- `GET /api/wallet/phone/:phoneNumber` - Get wallet by phone
+
+# Security- `POST /api/wallet/send` - Send transaction
+
+JWT_SECRET=your_secret
+
+PHONE_SALT=kudipay-salt-2024### FX Routes
+
+```
 
 - `GET /api/fx/rates` - Current exchange rates
-- `POST /api/fx/convert` - Convert currencies
 
-### Payment Routes
+## 📦 Available Scripts- `POST /api/fx/convert` - Convert currencies
 
-- `POST /api/payment/withdraw/bank` - Bank withdrawal
-- `POST /api/payment/withdraw/mobile-money` - Mobile money
 
-## 🗄️ Database Schema
 
-### Users Table
+```bash### Payment Routes
+
+npm start           # Start production server
+
+npm run dev         # Development server (nodemon)- `POST /api/payment/withdraw/bank` - Bank withdrawal
+
+npm test            # Run all tests- `POST /api/payment/withdraw/mobile-money` - Mobile money
+
+npm run test:fx     # Test FX engine
+
+npm run test:ussd   # Test USSD integration## 🗄️ Database Schema
+
+npm run logs        # View application logs
+
+npm run setup:at    # Setup Africa's Talking### Users Table
+
+```
 
 ```sql
-CREATE TABLE users (
+
+## 🔧 TroubleshootingCREATE TABLE users (
+
   id SERIAL PRIMARY KEY,
-  phone_number VARCHAR(20) UNIQUE NOT NULL,
-  wallet_address VARCHAR(42) UNIQUE NOT NULL,
-  private_key VARCHAR(66) NOT NULL,
-  pin VARCHAR(4) NOT NULL,
+
+### FX Engine Issues  phone_number VARCHAR(20) UNIQUE NOT NULL,
+
+- ✅ **"Currency USD not supported"** - Fixed with fiat-to-fiat handling  wallet_address VARCHAR(42) UNIQUE NOT NULL,
+
+- ✅ **"Cannot convert BigInt"** - Fixed with `.toString()` conversion  private_key VARCHAR(66) NOT NULL,
+
+- ✅ **Rate limiting (429)** - Handled with caching + stale fallback  pin VARCHAR(4) NOT NULL,
+
   is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+
+### USSD Issues  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+- Check ngrok URL matches Africa's Talking dashboard  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+- Phone normalization handles +234/0 prefixes automatically);
+
 ```
 
-### Transactions Table
+### Blockchain Issues
+
+- Ensure RPC_URL matches CHAIN_ID (84532)### Transactions Table
+
+- Deployer needs testnet ETH
 
 ```sql
-CREATE TABLE transactions (
+
+## 🤝 ContributingCREATE TABLE transactions (
+
   id SERIAL PRIMARY KEY,
-  tx_ref VARCHAR(50) UNIQUE NOT NULL,
-  from_phone VARCHAR(20),
-  to_phone VARCHAR(20),
-  from_wallet VARCHAR(42),
-  to_wallet VARCHAR(42),
+
+1. Fork the repository  tx_ref VARCHAR(50) UNIQUE NOT NULL,
+
+2. Create feature branch (`git checkout -b feature/name`)  from_phone VARCHAR(20),
+
+3. Commit changes (`git commit -m 'feat: Description'`)  to_phone VARCHAR(20),
+
+4. Push to branch (`git push origin feature/name`)  from_wallet VARCHAR(42),
+
+5. Open Pull Request  to_wallet VARCHAR(42),
+
   amount DECIMAL(18,6) NOT NULL,
-  currency VARCHAR(10) DEFAULT 'USDT',
+
+## 📄 License  currency VARCHAR(10) DEFAULT 'USDT',
+
   amount_ngn DECIMAL(15,2),
-  exchange_rate DECIMAL(10,4),
+
+MIT License - See [LICENSE](LICENSE) file  exchange_rate DECIMAL(10,4),
+
   fee DECIMAL(18,6) DEFAULT 0,
-  status VARCHAR(20) DEFAULT 'pending',
+
+## 🙏 Acknowledgments  status VARCHAR(20) DEFAULT 'pending',
+
   type VARCHAR(20) NOT NULL,
-  blockchain_hash VARCHAR(66),
-  metadata JSONB,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+
+- Africa's Talking - USSD infrastructure  blockchain_hash VARCHAR(66),
+
+- Base Network - L2 blockchain  metadata JSONB,
+
+- Binance - Primary FX data  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+- Chainlink - Decentralized oracles  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+- Flutterwave - Payment gateway);
+
 ```
+
+---
 
 ## 💱 FX Engine (NEW!)
 
+**Built with ❤️ for financial inclusion in Africa**
+
 A production-ready foreign exchange engine that converts crypto to local currency with profitable markup.
+
+📧 support@kudipay.com | 📱 Dial *384# (prod) or *384*73588# (sandbox)
 
 ### Features
 

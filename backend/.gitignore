@@ -1,1 +1,71 @@
+# Environment Variables
 .env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Logs (CRITICAL: Don't track logs!)
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# Test Coverage
+coverage/
+.nyc_output/
+
+# Build Output
+dist/
+build/
+*.tsbuildinfo
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+.server_pid
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup Files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Secrets & Keys
+*.pem
+*.key
+*.cert
+secrets/
+.secrets/
+
+# Local Development
+.cache/
+.parcel-cache/
+
+# Documentation Build
+docs/_build/
+docs/.doctrees/
