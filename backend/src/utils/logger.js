@@ -9,7 +9,7 @@ const logger = winston.createLogger({
     winston.format.errors({ stack: true }),
     winston.format.json()
   ),
-  defaultMeta: { service: 'kudipay-backend' },
+  defaultMeta: { service: 'terifi-backend' },
   transports: [
     new winston.transports.File({ 
       filename: 'logs/error.log', 
