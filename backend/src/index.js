@@ -35,7 +35,7 @@ app.use('/api/user', userRoutes);
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
-    message: 'KudiPay Backend is running',
+    message: 'Teri-Fi Backend is running',
     timestamp: new Date().toISOString()
   });
 });
@@ -65,7 +65,7 @@ const startServer = async () => {
     await connectDB();
     
     app.listen(PORT, () => {
-      logger.info(`KudiPay Backend server running on port ${PORT}`);
+      logger.info(`Teri-Fi Backend server running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
   } catch (error) {
