@@ -94,7 +94,7 @@ class SmsService {
    * @param {string} walletAddress - Generated wallet address
    */
   async sendRegistrationConfirmation(phoneNumber, walletAddress) {
-    const message = `Welcome to KudiPay! 🎉\n\n` +
+    const message = `Welcome to Teri-Fi! 🎉\n\n` +
       `Your wallet has been created successfully.\n\n` +
       `Wallet Address:\n${walletAddress}\n\n` +
       `You can now:\n` +
@@ -117,7 +117,7 @@ class SmsService {
     const usdBalance = balances.usd || 0;
     const ethBalance = balances.eth || 0;
 
-    const message = `KudiPay Balance 💰\n\n` +
+    const message = `Teri-Fi Balance 💰\n\n` +
       `Wallet: ${walletAddress.substring(0, 10)}...${walletAddress.substring(38)}\n\n` +
       `NGN: ₦${parseFloat(ngnBalance).toLocaleString('en-NG', { minimumFractionDigits: 2 })}\n` +
       `USD: $${parseFloat(usdBalance).toFixed(2)}\n` +

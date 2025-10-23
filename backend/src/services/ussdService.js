@@ -108,7 +108,7 @@ class UssdService {
         const existingUser = await User.findByPhone(session.phoneNumber);
         if (existingUser) {
           await session.end();
-          return 'END Your phone number is already registered with KudiPay.';
+          return 'END Your phone number is already registered with Teri-Fi.';
         }
         await session.updateStep('registration_pin');
         return 'CON Enter a 4-digit PIN for your wallet:';
@@ -128,7 +128,7 @@ class UssdService {
         
       case '0': // Exit
         await session.end();
-        return 'END Thank you for using KudiPay!';
+        return 'END Thank you for using Teri-Fi!';
         
       default:
         return 'CON ' + ussdConfig.messages.invalidOption + '\n\n' + this.getMainMenu();

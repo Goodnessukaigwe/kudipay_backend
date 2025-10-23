@@ -30,7 +30,7 @@ const ussdConfig = {
   },
   
   messages: {
-    welcome: 'Welcome to KudiPay! Choose an option:',
+    welcome: 'Welcome to Teri-Fi! Choose an option:',
     invalidOption: 'Invalid option. Please try again.',
     registration: {
       success: 'Phone number registered successfully! Your wallet is ready.',
