@@ -5,6 +5,7 @@
 Your backend now has the following build and deployment commands:
 
 ### Development
+
 ```bash
 npm run dev          # Run with nodemon (auto-restart on changes)
 npm start            # Run in production mode
@@ -12,6 +13,7 @@ npm run prod         # Run with NODE_ENV=production
 ```
 
 ### Build & Deployment
+
 ```bash
 npm run build        # Build command for hosting platforms
 ./build.sh           # Comprehensive build script
@@ -21,6 +23,7 @@ npm run lint:fix     # Fix linting issues automatically
 ```
 
 ### Database
+
 ```bash
 npm run db:migrate            # Run main schema
 npm run db:migrate:pin        # Add PIN security
@@ -33,6 +36,7 @@ npm run db:migrate:fx         # Add FX conversions
 ## Hosting Platform Deployment
 
 ### 1. **Railway** (Recommended)
+
 ```bash
 # Install Railway CLI
 npm install -g @railway/cli
@@ -54,6 +58,7 @@ railway up
 ```
 
 **Railway Configuration:**
+
 - Build Command: `npm run build`
 - Start Command: `npm start`
 - Port: 3000 (auto-detected)
@@ -61,6 +66,7 @@ railway up
 ### 2. **Render**
 
 **render.yaml** (create in backend folder):
+
 ```yaml
 services:
   - type: web
@@ -78,6 +84,7 @@ services:
 Connect your GitHub repo and Render will auto-deploy!
 
 ### 3. **Heroku**
+
 ```bash
 # Install Heroku CLI
 curl https://cli-assets.heroku.com/install.sh | sh
@@ -107,26 +114,27 @@ heroku run npm run db:migrate
 ### 4. **DigitalOcean App Platform**
 
 **app.yaml**:
+
 ```yaml
 name: kudipay-backend
 services:
-- name: api
-  github:
-    repo: Goodnessukaigwe/kudipay_backend
-    branch: main
-    deploy_on_push: true
-  build_command: npm run build
-  run_command: npm start
-  environment_slug: node-js
-  envs:
-  - key: NODE_ENV
-    value: production
-  http_port: 3000
-  
+  - name: api
+    github:
+      repo: Goodnessukaigwe/kudipay_backend
+      branch: main
+      deploy_on_push: true
+    build_command: npm run build
+    run_command: npm start
+    environment_slug: node-js
+    envs:
+      - key: NODE_ENV
+        value: production
+    http_port: 3000
+
 databases:
-- name: kudipay-db
-  engine: PG
-  production: true
+  - name: kudipay-db
+    engine: PG
+    production: true
 ```
 
 ### 5. **AWS EC2 / VPS**
@@ -169,6 +177,7 @@ sudo nano /etc/nginx/sites-available/kudipay
 ```
 
 **Nginx config:**
+
 ```nginx
 server {
     listen 80;
@@ -241,30 +250,31 @@ curl -X POST https://your-api-url.com/api/wallet/create \
 ### GitHub Actions (CI/CD)
 
 Create `.github/workflows/deploy.yml`:
+
 ```yaml
 name: Deploy to Production
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-      
+          node-version: "18"
+
       - name: Install dependencies
         run: cd backend && npm ci
-      
+
       - name: Run build
         run: cd backend && npm run build
-      
+
       - name: Deploy to Railway
         run: |
           npm install -g @railway/cli
@@ -297,6 +307,7 @@ tail -f backend/logs/error.log
 ## Troubleshooting
 
 ### Build fails
+
 ```bash
 # Check Node.js version
 node --version  # Should be >= 16.0.0
@@ -307,6 +318,7 @@ npm install
 ```
 
 ### Database connection fails
+
 ```bash
 # Test database connection
 psql $DATABASE_URL
@@ -316,6 +328,7 @@ npm run db:migrate
 ```
 
 ### Port already in use
+
 ```bash
 # Change PORT in .env
 PORT=3001
@@ -329,6 +342,7 @@ lsof -ti:3000 | xargs kill -9
 ## Support
 
 For deployment issues, check:
+
 - [Railway Docs](https://docs.railway.app/)
 - [Render Docs](https://render.com/docs)
 - [Heroku Docs](https://devcenter.heroku.com/)

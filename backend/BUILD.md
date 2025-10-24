@@ -16,11 +16,13 @@ npm start
 ## Available Scripts
 
 ### Development
+
 - `npm run dev` - Run with nodemon (auto-restart)
 - `npm start` - Run production server
 - `npm run prod` - Run with NODE_ENV=production
 
 ### Build & Deploy
+
 - `npm run build` - Build for deployment (validates code)
 - `npm run validate` - Validate package
 - `npm run lint` - Check code quality
@@ -28,12 +30,14 @@ npm start
 - `./build.sh` - Comprehensive build script
 
 ### Database
+
 - `npm run db:migrate` - Run main schema
 - `npm run db:migrate:pin` - Add PIN security
 - `npm run db:migrate:blockchain` - Add blockchain tracking
 - `npm run db:migrate:fx` - Add FX conversions
 
 ### Testing
+
 - `npm test` - Run tests
 - `npm run test:watch` - Run tests in watch mode
 
@@ -48,24 +52,30 @@ Most hosting platforms need:
 ### Platform-Specific Instructions
 
 #### Railway
+
 ```bash
 railway init
 railway up
 ```
+
 - Build: `npm run build`
 - Start: `npm start`
 
 #### Render
+
 - Build: `npm install && npm run build`
 - Start: `npm start`
 
 #### Heroku
+
 ```bash
 git push heroku main
 ```
+
 Uses `Procfile` automatically
 
 #### Vercel/Netlify (Serverless)
+
 - Build: `npm run build`
 - Output: `src/index.js`
 
@@ -98,20 +108,26 @@ Uses `Procfile` automatically
 ## Troubleshooting
 
 ### "Build command not found"
+
 Make sure you're in the `backend` directory:
+
 ```bash
 cd backend
 npm run build
 ```
 
 ### Port already in use
+
 Change port in `.env`:
+
 ```bash
 PORT=3001
 ```
 
 ### Database connection error
+
 Verify `DATABASE_URL` in `.env`:
+
 ```bash
 echo $DATABASE_URL
 ```
