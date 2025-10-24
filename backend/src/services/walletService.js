@@ -338,8 +338,8 @@ class WalletService {
         totalFee: 0
       };
     } catch (error) {
-      logger.error('Estimate fee error:', error);
-      throw error;
+        logger.error('Estimate fee error:', error);
+        throw error;
     }
   }
 }
