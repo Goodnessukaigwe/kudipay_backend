@@ -3,6 +3,8 @@ const Transaction = require('../models/Transaction');
 const walletService = require('../services/walletService');
 const logger = require('../utils/logger');
 const { formatPhoneNumber, isValidPhoneNumber } = require('../utils/helpers');
+const phoneWalletMappingService = require('../services/phoneWalletMappingService')
+
 
 class UserController {
   /**
@@ -35,12 +37,22 @@ class UserController {
         });
       }
 
-      // Check if user already exists
+      // Check if user already exists in DB
       const existingUser = await User.findByPhone(formattedPhone);
       if (existingUser) {
         return res.status(400).json({
           success: false,
           message: 'Phone number already registered'
+        });
+      }
+
+      // Check if phone already registered on blockchain
+      const existingOnChain = await phoneWalletMappingService.isPhoneNumberRegistered(formattedPhone);
+      if (existingOnChain) {
+        // Allow user to complete registration if not in DB
+        return res.status(400).json({
+          success: false,
+          message: 'Phone registered on blockchain. Please complete registration.'
         });
       }
 
