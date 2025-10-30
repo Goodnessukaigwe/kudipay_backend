@@ -322,6 +322,33 @@ class FxController {
       });
     }
   }
+
+  /**
+   * Get real-time USD to NGN conversion
+   * GET /api/fx/usd-to-ngn?amount=100
+   */
+  async getUsdToNgn(req, res) {
+    try {
+      const amount = parseFloat(req.query.amount);
+      if (isNaN(amount) || amount <= 0) {
+        return res.status(400).json({ success: false, message: 'Invalid amount' });
+      }
+      // Use BinanceProvider directly or via FX Engine
+      const BinanceProvider = require('../services/fx/providers/BinanceProvider');
+      const fxProvider = new BinanceProvider();
+      const rate = await fxProvider.getUsdToNgnRate();
+      const ngnAmount = amount * rate;
+      res.json({
+        success: true,
+        usdAmount: amount,
+        ngnAmount,
+        rate
+      });
+    } catch (error) {
+      logger.error('Get USD to NGN error:', error);
+      res.status(500).json({ success: false, message: 'Failed to convert USD to NGN' });
+    }
+  }
 }
 
 // Validation middleware
