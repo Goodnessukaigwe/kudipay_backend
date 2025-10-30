@@ -46,6 +46,13 @@ router.get('/health', controller.getHealthStatus.bind(controller));
  */
 router.post('/convert', validations.convertAmount, controller.convertAmount.bind(controller));
 
+/**
+ * @route   GET /api/fx/usd-to-ngn
+ * @desc    Get real-time USD to NGN conversion
+ * @access  Public
+ */
+router.get('/usd-to-ngn', controller.getUsdToNgn.bind(controller));
+
 // Protected Endpoints (require authentication in production)
 
 /**

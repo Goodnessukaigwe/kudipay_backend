@@ -43,6 +43,7 @@
 - `POST   /api/fx/convert` — Convert amount with profit tracking
 - `GET    /api/fx/profit/stats` — Get profit statistics (protected)
 - `GET    /api/fx/history` — Get user conversion history (protected)
+- `GET    /api/fx/usd-to-ngn?amount=<usdAmount>` — Convert USD amount to NGN (real-time)
 
 ## USSD Endpoints
 - `POST   /api/ussd/callback` — Main USSD handler
